@@ -1,5 +1,7 @@
+<script setup lang="ts">
+import logo from '~/assets/XGNewTab.svg'
+</script>
+
 <template>
-  <a class="icon-btn mx-2 text-2xl" rel="noreferrer" href="https://github.com/XXGGG" target="_blank" title="GitHub">
-    <pixelarticons-power />
-  </a>
+  <img :src="logo" class="w-12 h-12 mx-auto" alt="XGNewTab">
 </template>

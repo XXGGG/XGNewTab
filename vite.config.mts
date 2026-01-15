@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import { dirname, relative } from 'node:path'
 import type { UserConfig } from 'vite'
 import { defineConfig } from 'vite'
@@ -104,13 +102,8 @@ export default defineConfig(({ command }) => ({
       input: {
         options: r('src/options/index.html'),
         popup: r('src/popup/index.html'),
-        sidepanel: r('src/sidepanel/index.html'),
-        newtab: r('src/newtab/index.html'), // ⬅️ 添加这个
+        newtab: r('src/newtab/index.html'),
       },
     },
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
   },
 }))
