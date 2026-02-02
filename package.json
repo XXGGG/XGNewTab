@@ -1,7 +1,7 @@
 {
   "name": "xgnewtab",
   "displayName": "XGNewTab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "packageManager": "pnpm@10.9.0",
   "description": "自定义浏览器新标签页，快速跳转到你最常用的网站",
@@ -25,7 +25,11 @@
     "clear": "rimraf --glob extension/dist extension/manifest.json extension.*",
     "lint": "eslint --cache .",
     "postinstall": "simple-git-hooks",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "version:patch": "esno scripts/bump-version.ts patch",
+    "version:minor": "esno scripts/bump-version.ts minor",
+    "version:major": "esno scripts/bump-version.ts major",
+    "release": "pnpm run version:patch && pnpm run build && python pack.py"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.27.0",
