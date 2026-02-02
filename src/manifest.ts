@@ -40,7 +40,6 @@ export async function getManifest() {
       128: 'assets/icon-128.png',
     },
     permissions: [
-      'tabs',
       'storage',
     ],
     content_security_policy: {
