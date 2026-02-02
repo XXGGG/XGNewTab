@@ -16,7 +16,7 @@ function isValidUrl(url: string): boolean {
   if (!url || !url.trim())
     return true
   try {
-    const parsed = new URL(url)
+    const parsed = new URL(url.trim().match(/^https?:\/\//i) ? url : `https://${url}`)
     return ['http:', 'https:'].includes(parsed.protocol)
   }
   catch {
@@ -63,14 +63,33 @@ function addPreset() {
   newPresetUrl.value = ''
 }
 
+// 在新标签页打开网址
+function openUrl(url: string) {
+  if (url && url.trim()) {
+    window.open(url, '_blank')
+  }
+}
+
+// 设为自动跳转网址
+function setAsAutoRedirect(url: string) {
+  if (url && url.trim()) {
+    inputUrl.value = url.trim()
+    customNewTabUrl.value = url.trim()
+    showSaved.value = true
+    setTimeout(() => showSaved.value = false, 2000)
+  }
+}
+
 watch(inputUrl, (newUrl) => {
   errorMsg.value = ''
   if (!newUrl || !newUrl.trim()) {
     customNewTabUrl.value = ''
+    showSaved.value = true
+    setTimeout(() => showSaved.value = false, 1500)
     return
   }
   if (isValidUrl(newUrl)) {
-    customNewTabUrl.value = newUrl
+    customNewTabUrl.value = newUrl.trim()
     showSaved.value = true
     setTimeout(() => showSaved.value = false, 1500)
   }
@@ -93,86 +112,126 @@ watch(customNewTabUrl, (newUrl) => {
     </h1>
     <SharedSubtitle />
 
-    <div class="max-w-lg mx-auto mt-6">
-      <label class="block text-left text-sm font-medium mb-2">
-        新标签页网址
-      </label>
-      <div class="relative">
-        <input
-          v-model="inputUrl"
-          class="w-full px-4 py-3 border rounded-lg transition-colors text-base"
-          :class="[
-            isValid
-              ? 'border-gray-300 focus:border-blue-500 dark:border-gray-600'
-              : 'border-red-400 focus:border-red-500',
-          ]"
-          type="url"
-          placeholder="https://example.com"
-        >
-        <transition name="fade">
-          <span
-            v-if="showSaved"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm font-medium"
+    <div class="max-w-2xl mx-auto mt-6">
+      <!-- 自定义新标签页 URL -->
+      <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 mb-6">
+        <label class="block text-left text-sm font-medium mb-3">
+          新标签页跳转网址
+        </label>
+        <div class="relative">
+          <input
+            v-model="inputUrl"
+            class="w-full px-4 py-3 border rounded-lg transition-colors text-base bg-white dark:bg-gray-700"
+            :class="[
+              isValid
+                ? 'border-gray-300 focus:border-blue-500 dark:border-gray-600'
+                : 'border-red-400 focus:border-red-500',
+            ]"
+            type="url"
+            placeholder="https://example.com"
           >
-            已保存
-          </span>
-        </transition>
+          <transition name="fade">
+            <span
+              v-if="showSaved"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm font-medium"
+            >
+              已保存
+            </span>
+          </transition>
+        </div>
+        <p v-if="errorMsg" class="mt-2 text-red-500 text-sm text-left">
+          {{ errorMsg }}
+        </p>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-left">
+          {{ customNewTabUrl ? `✓ 打开新标签页时将跳转到：${customNewTabUrl}` : 'ℹ️ 留空则显示引导页面，引导用户设置跳转网址' }}
+        </p>
       </div>
-      <p v-if="errorMsg" class="mt-2 text-red-500 text-sm text-left">
-        {{ errorMsg }}
-      </p>
 
       <!-- 预设网址管理 -->
-      <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <p class="text-sm font-medium text-left mb-3">
-          快捷网址
-        </p>
+      <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-sm font-medium text-left">
+            快捷网址管理
+          </p>
+          <p class="text-xs text-gray-400">
+            点击绿色按钮快速设置为跳转网址
+          </p>
+        </div>
 
-        <!-- 预设列表 - 每行一个 -->
-        <div class="space-y-2">
+        <!-- 预设列表 -->
+        <div class="space-y-3">
           <div
             v-for="(preset, index) in presetUrls"
             :key="index"
-            class="flex items-center gap-2"
+            class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
           >
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              {{ preset.name.charAt(0) }}
+            </div>
             <input
               :value="preset.name"
-              class="w-24 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg"
+              class="w-32 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
               placeholder="名称"
               @input="updatePresetName(index, ($event.target as HTMLInputElement).value)"
             >
             <input
               :value="preset.url"
-              class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg"
+              class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
               placeholder="https://example.com"
               @input="updatePresetUrl(index, ($event.target as HTMLInputElement).value)"
             >
-            <img
-              :src="deleteIcon"
-              class="w-6 h-6 cursor-pointer hover:opacity-70 transition-opacity"
+            <button
+              class="p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors group"
+              :class="{ 'bg-green-100 dark:bg-green-900/30': customNewTabUrl === preset.url }"
+              :title="customNewTabUrl === preset.url ? '当前自动跳转网址' : '设为自动跳转'"
+              @click="setAsAutoRedirect(preset.url)"
+            >
+              <svg class="w-5 h-5 transition-colors" :class="customNewTabUrl === preset.url ? 'text-green-600' : 'text-gray-500 group-hover:text-green-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+            <button
+              class="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors group"
+              title="访问此网址"
+              @click="openUrl(preset.url)"
+            >
+              <svg class="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </button>
+            <button
+              class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              title="删除"
               @click="deletePreset(index)"
             >
+              <img
+                :src="deleteIcon"
+                class="w-5 h-5"
+                alt="删除"
+              >
+            </button>
           </div>
 
           <!-- 新增行 -->
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-dashed border-green-200 dark:border-green-800">
+            <div class="w-8 h-8 bg-green-400 rounded flex items-center justify-center text-white text-lg flex-shrink-0" />
             <input
               v-model="newPresetName"
-              class="w-24 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg"
+              class="w-32 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
               placeholder="名称"
             >
             <input
               v-model="newPresetUrl"
-              class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg"
-              :class="[isNewPresetValid || !newPresetUrl ? '' : 'border-red-400']"
+              class="flex-1 px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700"
+              :class="[isNewPresetValid || !newPresetUrl ? 'border-gray-300 dark:border-gray-600' : 'border-red-400']"
               placeholder="https://example.com"
             >
             <button
-              class="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
               :disabled="!newPresetName.trim() || !isNewPresetValid"
               @click="addPreset"
             >
-              Add
+              添加
             </button>
           </div>
         </div>
@@ -193,5 +252,10 @@ watch(customNewTabUrl, (newUrl) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 </style>

@@ -11,7 +11,7 @@ function isValidUrl(url: string): boolean {
   if (!url || !url.trim())
     return true
   try {
-    const parsed = new URL(url)
+    const parsed = new URL(url.trim().match(/^https?:\/\//i) ? url : `https://${url}`)
     return ['http:', 'https:'].includes(parsed.protocol)
   }
   catch {
@@ -39,10 +39,12 @@ watch(inputUrl, (newUrl) => {
   errorMsg.value = ''
   if (!newUrl || !newUrl.trim()) {
     customNewTabUrl.value = ''
+    showSaved.value = true
+    setTimeout(() => showSaved.value = false, 1500)
     return
   }
   if (isValidUrl(newUrl)) {
-    customNewTabUrl.value = newUrl
+    customNewTabUrl.value = newUrl.trim()
     showSaved.value = true
     setTimeout(() => showSaved.value = false, 1500)
   }
@@ -59,7 +61,7 @@ watch(customNewTabUrl, (newUrl) => {
 </script>
 
 <template>
-  <main class="w-[300px] px-4 py-5 text-center text-gray-700">
+  <main class="w-[320px] px-4 py-5 text-center text-gray-700">
     <!-- Logo 点击打开设置页 -->
     <div class="cursor-pointer hover:opacity-80 transition-opacity" @click="openOptions">
       <Logo />
@@ -93,6 +95,11 @@ watch(customNewTabUrl, (newUrl) => {
 
     <p v-if="errorMsg" class="text-red-500 text-xs text-left mt-1">
       {{ errorMsg }}
+    </p>
+
+    <!-- 说明文字 -->
+    <p class="text-xs text-gray-400 mt-2 text-left">
+      {{ customNewTabUrl ? '打开新标签页时将跳转到此网址' : '留空则显示引导页' }}
     </p>
 
     <!-- 预设网址 -->

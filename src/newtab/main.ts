@@ -1,23 +1,42 @@
-// 后备方案：如果后台脚本没有成功重定向，这里作为兜底
+import { createApp } from 'vue'
 import { storage } from 'webextension-polyfill'
+import Welcome from './Welcome.vue'
+import { setupApp } from '~/logic/common-setup'
+import '../styles'
 
-async function handleNewTab() {
-  // 添加一个短暂延迟，让后台脚本有机会处理
-  setTimeout(async () => {
-    try {
-      const { customNewTabUrl } = await storage.local.get('customNewTabUrl')
+// 检查并执行重定向
+async function checkAndRedirect() {
+  try {
+    const result = await storage.local.get('customNewTabUrl')
+    const customUrl = result.customNewTabUrl
 
-      if (customNewTabUrl && typeof customNewTabUrl === 'string' && customNewTabUrl.trim()) {
-        // 如果还在新标签页，说明后台脚本没有成功重定向，使用兜底方案
-        if (location.href.includes('newtab/index.html') || location.href.includes('chrome://newtab/')) {
-          location.replace(customNewTabUrl)
-        }
+    // 如果设置了自定义URL，直接重定向
+    if (customUrl && typeof customUrl === 'string' && customUrl.trim()) {
+      let targetUrl = customUrl.trim()
+      // 确保URL有协议
+      if (!targetUrl.match(/^https?:\/\//i)) {
+        targetUrl = `https://${targetUrl}`
       }
+
+      // 使用 location.replace 避免在历史记录中留下痕迹
+      window.location.replace(targetUrl)
+      return true // 已重定向
     }
-    catch (error) {
-      console.error('新标签页重定向失败:', error)
-    }
-  }, 100) // 100ms延迟
+
+    return false // 未设置，显示引导页
+  }
+  catch (error) {
+    console.error('检查重定向失败:', error)
+    return false
+  }
 }
 
-handleNewTab()
+// 先检查重定向，如果没有设置则显示欢迎页
+checkAndRedirect().then((redirected) => {
+  if (!redirected) {
+    // 没有设置跳转网址，显示欢迎引导页
+    const app = createApp(Welcome)
+    setupApp(app)
+    app.mount('#app')
+  }
+})

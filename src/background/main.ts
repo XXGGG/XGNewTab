@@ -9,39 +9,6 @@ browser.runtime.onInstalled.addListener((): void => {
   console.log('XGNewTab installed')
 })
 
-// 监听新标签页创建，直接重定向到自定义URL
-browser.tabs.onCreated.addListener(async (tab) => {
-  // 检查是否是新标签页（chrome://newtab/ 或者我们的扩展页面）
-  if (tab.url === 'chrome://newtab/' || tab.url?.includes('newtab/index.html')) {
-    try {
-      // 从存储中获取自定义URL
-      const { customNewTabUrl } = await browser.storage.local.get('customNewTabUrl')
-
-      if (customNewTabUrl && typeof customNewTabUrl === 'string' && customNewTabUrl.trim()) {
-        // 直接更新标签页URL，避免重定向
-        await browser.tabs.update(tab.id, { url: customNewTabUrl })
-      }
-    }
-    catch (error) {
-      console.error('重定向新标签页失败:', error)
-    }
-  }
-})
-
-// 监听标签页更新事件，处理空白新标签页（作为备用方案）
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // 当标签页完成加载且URL是新标签页时
-  if (changeInfo.status === 'complete'
-    && (tab.url === 'chrome://newtab/' || tab.url?.includes('newtab/index.html'))) {
-    try {
-      const { customNewTabUrl } = await browser.storage.local.get('customNewTabUrl')
-
-      if (customNewTabUrl && typeof customNewTabUrl === 'string' && customNewTabUrl.trim()) {
-        await browser.tabs.update(tabId, { url: customNewTabUrl })
-      }
-    }
-    catch (error) {
-      console.error('更新标签页失败:', error)
-    }
-  }
-})
+// 注意：根据 Chrome Web Store 政策（Red Argon），
+// 新标签页扩展不应该使用后台脚本监听标签页事件并强制重定向。
+// 正确的做法是在新标签页本身提供内容和导航选项，让用户主动点击。
