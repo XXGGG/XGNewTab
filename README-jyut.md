@@ -30,14 +30,10 @@ XGNewTab 係一個簡單嘅瀏覽器擴充程式，畀你可以自訂新標籤�
 ## 安裝
 
 ### Chrome 網上應用程式商店
-
-<!-- TODO: 加 Chrome 商店連結 -->
-就嚟上線...
+撳呢度：[Chrome應用商店 - XGNewTab](https://chromewebstore.google.com/detail/xgnewtab/kefmpjgpgaenhafgpekmeokbbepladfd?hl=zh-cn)
 
 ### Edge 附加元件
-
-<!-- TODO: 加 Edge 商店連結 -->
-就嚟上線...
+撳呢度：[Edge擴充商店 - XGNewTab](https://microsoftedge.microsoft.com/addons/detail/xgnewtab/hgopfokppklholomjognciddfdihligk?hl=zh-CN)
 
 ### 手動安裝
 

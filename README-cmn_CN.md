@@ -30,14 +30,10 @@ XGNewTab 是一个简单的浏览器扩展，让你可以自定义新标签页�
 ## 安装
 
 ### Chrome 应用商店
-
-<!-- TODO: 添加 Chrome 应用商店链接 -->
-即将上线...
+点击前往：[Chrome应用商店 - XGNewTab](https://chromewebstore.google.com/detail/xgnewtab/kefmpjgpgaenhafgpekmeokbbepladfd?hl=zh-cn)
 
 ### Edge 扩展商店
-
-<!-- TODO: 添加 Edge 扩展商店链接 -->
-即将上线...
+点击前往：[Edge扩展商店 - XGNewTab](https://microsoftedge.microsoft.com/addons/detail/xgnewtab/hgopfokppklholomjognciddfdihligk?hl=zh-CN)
 
 ### 手动安装
 

@@ -30,14 +30,10 @@ XGNewTab is a simple browser extension that allows you to customize your new tab
 ## Installation
 
 ### Chrome Web Store
-
-<!-- TODO: Add Chrome Web Store link -->
-Coming soon...
+Click here: [Chrome Web Store - XGNewTab](https://chromewebstore.google.com/detail/xgnewtab/kefmpjgpgaenhafgpekmeokbbepladfd?hl=zh-cn)
 
 ### Edge Add-ons
-
-<!-- TODO: Add Edge Add-ons link -->
-Coming soon...
+Click here: [Edge Add-ons - XGNewTab](https://microsoftedge.microsoft.com/addons/detail/xgnewtab/hgopfokppklholomjognciddfdihligk?hl=zh-CN)
 
 ### Manual Installation
 

@@ -30,14 +30,10 @@ XGNewTab 是一個簡單的瀏覽器擴充功能，讓你可以自訂新分頁�
 ## 安裝
 
 ### Chrome 線上應用程式商店
-
-<!-- TODO: 新增 Chrome 商店連結 -->
-即將上線...
+點擊前往：[Chrome應用商店 - XGNewTab](https://chromewebstore.google.com/detail/xgnewtab/kefmpjgpgaenhafgpekmeokbbepladfd?hl=zh-cn)
 
 ### Edge 附加元件
-
-<!-- TODO: 新增 Edge 商店連結 -->
-即將上線...
+點擊前往：[Edge擴充商店 - XGNewTab](https://microsoftedge.microsoft.com/addons/detail/xgnewtab/hgopfokppklholomjognciddfdihligk?hl=zh-CN)
 
 ### 手動安裝
 
